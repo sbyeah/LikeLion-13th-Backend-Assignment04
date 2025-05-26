@@ -31,8 +31,7 @@ public class ProductService {
     }
 
     public ProductInfoResponseDto productFind(Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다."));
+        Product product = findProductById(id);
         return ProductInfoResponseDto.from(product);
     }
 
@@ -46,15 +45,20 @@ public class ProductService {
 
     @Transactional
     public void productUpdate(Long id, ProductUpdateRequestDto dto) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다."));
+        Product product = findProductById(id);
         product.update(dto);
     }
 
     @Transactional
     public void productDelete(Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다."));
+        Product product = findProductById(id);
         productRepository.delete(product);
+    }
+
+    // ------------------------
+    // 조회 + 예외처리 메서드 분리
+    private Product findProductById(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다."));
     }
 }

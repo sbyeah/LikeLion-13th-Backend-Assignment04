@@ -1,6 +1,10 @@
 package com.likelion.assignment3_junseoungbin.product.api.dto.request;
 
-public record ProductUpdateRequestDto (
+import jakarta.validation.constraints.NotBlank;
+
+public record ProductUpdateRequestDto(
+        @NotBlank(message = "name은 필수입니다.")
         String name,
+
         int price
 ) {}

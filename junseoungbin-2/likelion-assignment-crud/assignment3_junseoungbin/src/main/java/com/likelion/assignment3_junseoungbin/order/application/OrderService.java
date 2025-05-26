@@ -23,8 +23,7 @@ public class OrderService {
 
     @Transactional
     public void orderSave(OrderSaveRequestDto dto) {
-        Product product = productRepository.findById(dto.productId())
-                .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다."));
+        Product product = findProductById(dto.productId());
 
         Order order = Order.builder()
                 .customerId(dto.customerId())
@@ -36,8 +35,7 @@ public class OrderService {
     }
 
     public OrderListResponseDto orderFindProduct(Long productId) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다."));
+        Product product = findProductById(productId);
 
         List<Order> orderList = orderRepository.findByProduct(product);
         List<OrderInfoResponseDto> orderInfoResponseDtos = orderList.stream()
@@ -49,15 +47,23 @@ public class OrderService {
 
     @Transactional
     public void orderUpdate(Long orderId, OrderUpdateRequestDto dto) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("주문이 없습니다."));
+        Order order = findOrderById(orderId);
         order.update(dto);
     }
 
     @Transactional
     public void orderDelete(Long orderId) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("주문이 없습니다."));
+        Order order = findOrderById(orderId);
         orderRepository.delete(order);
+    }
+
+    private Product findProductById(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다."));
+    }
+
+    private Order findOrderById(Long orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("주문이 없습니다."));
     }
 }
